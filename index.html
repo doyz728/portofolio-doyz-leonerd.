@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doyz Leonerd - Portfolio</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & React DOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  
+  <!-- Babel untuk membaca JSX -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+    const { 
+      Instagram, Mail, Phone, MapPin, Sparkles, TrendingUp, Video, Share2, 
+      CheckCircle2, Sun, Moon, ExternalLink, Copy, FileText, Send, Upload, 
+      Award, Zap, ArrowUpRight, Globe, Menu, X, MessageSquare, Briefcase, 
+      GraduationCap, Check, Camera, Trash2, Star, Users, BarChart3, ChevronDown 
+    } = LucideReact;
+
+    const INITIAL_CV_DATA = {
+      fullName: "DOYZ LEONERD",
+      title: "Professional Selebgram & Top Affiliate Marketer",
+      avatarInitials: "DL",
+      avatarUrl: null,
+      contact: {
+        email: "doyzgnteng@gmail.com",
+        whatsapp: "+62 831-6285-5631",
+        whatsappRaw: "6283162855631",
+        instagram: "@doyz_gnteng",
+        instagramUrl: "https://instagram.com/doyz_gnteng",
+        location: "Indonesia",
+        googleMapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.234190280108!2d106.827153!3d-6.175392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e80f6229c1%3A0x6a0c000000000000!2sIndonesia!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+      },
+      bioSummary: "Selebgram profesional dan Spesialis Affiliate Marketing berpengalaman luas dalam industri konten digital, promosi produk, serta strategi growth social media. Berhasil mengelola ratusan hingga ribuan kampanye promosi berkinerja tinggi, mengoptimalkan interaksi audiens (engagement rate), serta mendorong tingkat konversi penjualan produk melalui pendekatan khas yang disukai generasi Gen Z dan tren terkini.",
+      primarySkills: [
+        "Selebgram & Influencer",
+        "Affiliate Marketing",
+        "Social Media Strategy",
+        "Content Creation",
+        "TikTok & Instagram FYP",
+        "Copywriting & Scripting",
+        "Brand Endorsement",
+        "Gen Z Audience Growth"
+      ],
+      toolsAndPlatforms: [
+        "Instagram Reels",
+        "TikTok Center",
+        "Shopee Affiliate",
+        "CapCut",
+        "Canva"
+      ],
+      languages: [
+        { name: "Bahasa Indonesia", level: "Anatif (Native)" },
+        { name: "Bahasa Inggris", level: "Tingkat Menengah (Intermediate)" }
+      ],
+      experiences: [
+        {
+          id: "exp-1",
+          role: "Professional Influencer & Content Creator",
+          company: "Instagram (@doyz_gnteng) & Short Video Platforms",
+          period: "2022 - Sekarang",
+          highlights: [
+            "Mengelola brand personal sebagai Selebgram dengan memproduksi ribuan konten kreatif berdaya saing tinggi.",
+            "Bekerja sama dengan berbagai brand e-commerce dan UMKM lokal dalam promosi endorsement, unboxing, dan ulasan produk.",
+            "Mengoptimalkan engagement rate audiens melalui strategi visual, penulisan caption yang relevan, serta penguasaan tren terkini."
+          ]
+        },
+        {
+          id: "exp-2",
+          role: "Top Affiliate Marketing Specialist",
+          company: "Shopee Affiliate & TikTok Shop Ecosystem",
+          period: "2023 - Sekarang",
+          highlights: [
+            "Merancang dan merealisasikan ribuan kampanye konten promosi produk (fashion, lifestyle, produk populer Gen Z).",
+            "Membuat hook video berdurasi singkat dan skrip voiceover teruji yang konsisten masuk FYP/Reels viral serta mengonversi click-through-rate menjadi penjualan nyata.",
+            "Melakukan riset produk potensial, analisis tren pasar, dan evaluasi performa link affiliate."
+          ]
+        },
+        {
+          id: "exp-3",
+          role: "Visual Brand & Strategy Consultant",
+          company: "E-Commerce & Digital Store Projects",
+          period: "2026",
+          highlights: [
+            "Membangun identitas merek (visual branding), estetika logo, dan konsep promosi terpadu untuk platform toko online.",
+            "Mengembangkan strategi konten interaktif yang memperkuat kepercayaan dan minat beli calon pelanggan."
+          ]
+        }
+      ],
+      education: [
+        {
+          degree: "Sarjana / Sederajat",
+          field: "Komunikasi Digital & Pemasaran (Atau Setara)",
+          status: "Lulusan",
+          description: "Spesialisasi dalam Media Sosial, Manajemen Pengaruh (Influencer Management), dan Strategi Pemasaran Digital."
+        }
+      ],
+      specialFeatures: [
+        {
+          title: "Ribuan Pengalaman Kampanye Promosi",
+          desc: "Penguasaan mendalam dalam eksekusi proyek konten promosi produk harian."
+        },
+        {
+          title: "Gen Z Engagement Optimization",
+          desc: "Pemahaman mendalam terkait gaya bahasa, estetika, dan preferensi audiens muda."
+        }
+      ],
+      keyMetrics: [
+        { label: "Pengalaman Konten", value: "1,000+" },
+        { label: "Fokus Audiens", value: "Gen Z & Millennial" },
+        { label: "Ekosistem Dominan", value: "Shopee & TikTok" },
+        { label: "Konversi Konten", value: "High CTR FYP" }
+      ],
+      testimonials: [
+        {
+          quote: "Hasil konten promo dari Doyz luar biasa! Engagement tinggi dan link affiliate terkonversi sangat signifikan ke penjualan toko kami.",
+          brand: "Local Fashion Brand Partner",
+          role: "E-Commerce Manager",
+          rating: 5
+        },
+        {
+          quote: "Hook videonya selalu pas dengan selera Gen Z. Sangat profesional, komunikasi cepat, dan eksekusi kampanye rapi.",
+          brand: "Beauty & Lifestyle Merchant",
+          role: "Marketing Lead",
+          rating: 5
+        }
+      ]
+    };
+
+    function App() {
+      const [theme, setTheme] = useState('dark');
+      const [profile, setProfile] = useState(INITIAL_CV_DATA);
+      const [isPreloading, setIsPreloading] = useState(true);
+      const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+      const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+      const [rawCvInput, setRawCvInput] = useState('');
+      const [copiedField, setCopiedField] = useState(null);
+      const [toastMessage, setToastMessage] = useState(null);
+      
+      const fileInputRef = useRef(null);
+
+      const [campaignEstViews, setCampaignEstViews] = useState(50000);
+      const [contactForm, setContactForm] = useState({ name: '', email: '', message: '', budget: 'Standard' });
+      const
+  
