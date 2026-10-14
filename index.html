@@ -15,21 +15,20 @@
   <!-- Babel untuk membaca JSX -->
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
   
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide-react@0.263.1/dist/umd/lucide-react.js"></script>
+  <!-- Font Awesome Icons (Pengganti Lucide yang stabil via CDN) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="bg-slate-950 text-slate-100">
+<body class="bg-slate-950 text-slate-100 min-h-screen">
 
   <div id="root"></div>
 
   <script type="text/babel">
     const { useState, useEffect, useRef } = React;
-    const { 
-      Instagram, Mail, Phone, MapPin, Sparkles, TrendingUp, Video, Share2, 
-      CheckCircle2, Sun, Moon, ExternalLink, Copy, FileText, Send, Upload, 
-      Award, Zap, ArrowUpRight, Globe, Menu, X, MessageSquare, Briefcase, 
-      GraduationCap, Check, Camera, Trash2, Star, Users, BarChart3, ChevronDown 
-    } = LucideReact;
+
+    // Helper Komponen Icon Sederhana agar tidak crash
+    const Icon = ({ name, className = "w-4 h-4" }) => (
+      <i className={`fa-solid fa-${name} ${className}`}></i>
+    );
 
     const INITIAL_CV_DATA = {
       fullName: "DOYZ LEONERD",
@@ -42,8 +41,7 @@
         whatsappRaw: "6283162855631",
         instagram: "@doyz_gnteng",
         instagramUrl: "https://instagram.com/doyz_gnteng",
-        location: "Indonesia",
-        googleMapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15865.234190280108!2d106.827153!3d-6.175392!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e80f6229c1%3A0x6a0c000000000000!2sIndonesia!5e0!3m2!1sid!2sid!4v1700000000000!5m2!1sid!2sid"
+        location: "Indonesia"
       },
       bioSummary: "Selebgram profesional dan Spesialis Affiliate Marketing berpengalaman luas dalam industri konten digital, promosi produk, serta strategi growth social media. Berhasil mengelola ratusan hingga ribuan kampanye promosi berkinerja tinggi, mengoptimalkan interaksi audiens (engagement rate), serta mendorong tingkat konversi penjualan produk melalui pendekatan khas yang disukai generasi Gen Z dan tren terkini.",
       primarySkills: [
@@ -55,105 +53,138 @@
         "Copywriting & Scripting",
         "Brand Endorsement",
         "Gen Z Audience Growth"
-      ],
-      toolsAndPlatforms: [
-        "Instagram Reels",
-        "TikTok Center",
-        "Shopee Affiliate",
-        "CapCut",
-        "Canva"
-      ],
-      languages: [
-        { name: "Bahasa Indonesia", level: "Anatif (Native)" },
-        { name: "Bahasa Inggris", level: "Tingkat Menengah (Intermediate)" }
-      ],
-      experiences: [
-        {
-          id: "exp-1",
-          role: "Professional Influencer & Content Creator",
-          company: "Instagram (@doyz_gnteng) & Short Video Platforms",
-          period: "2022 - Sekarang",
-          highlights: [
-            "Mengelola brand personal sebagai Selebgram dengan memproduksi ribuan konten kreatif berdaya saing tinggi.",
-            "Bekerja sama dengan berbagai brand e-commerce dan UMKM lokal dalam promosi endorsement, unboxing, dan ulasan produk.",
-            "Mengoptimalkan engagement rate audiens melalui strategi visual, penulisan caption yang relevan, serta penguasaan tren terkini."
-          ]
-        },
-        {
-          id: "exp-2",
-          role: "Top Affiliate Marketing Specialist",
-          company: "Shopee Affiliate & TikTok Shop Ecosystem",
-          period: "2023 - Sekarang",
-          highlights: [
-            "Merancang dan merealisasikan ribuan kampanye konten promosi produk (fashion, lifestyle, produk populer Gen Z).",
-            "Membuat hook video berdurasi singkat dan skrip voiceover teruji yang konsisten masuk FYP/Reels viral serta mengonversi click-through-rate menjadi penjualan nyata.",
-            "Melakukan riset produk potensial, analisis tren pasar, dan evaluasi performa link affiliate."
-          ]
-        },
-        {
-          id: "exp-3",
-          role: "Visual Brand & Strategy Consultant",
-          company: "E-Commerce & Digital Store Projects",
-          period: "2026",
-          highlights: [
-            "Membangun identitas merek (visual branding), estetika logo, dan konsep promosi terpadu untuk platform toko online.",
-            "Mengembangkan strategi konten interaktif yang memperkuat kepercayaan dan minat beli calon pelanggan."
-          ]
-        }
-      ],
-      education: [
-        {
-          degree: "Sarjana / Sederajat",
-          field: "Komunikasi Digital & Pemasaran (Atau Setara)",
-          status: "Lulusan",
-          description: "Spesialisasi dalam Media Sosial, Manajemen Pengaruh (Influencer Management), dan Strategi Pemasaran Digital."
-        }
-      ],
-      specialFeatures: [
-        {
-          title: "Ribuan Pengalaman Kampanye Promosi",
-          desc: "Penguasaan mendalam dalam eksekusi proyek konten promosi produk harian."
-        },
-        {
-          title: "Gen Z Engagement Optimization",
-          desc: "Pemahaman mendalam terkait gaya bahasa, estetika, dan preferensi audiens muda."
-        }
-      ],
-      keyMetrics: [
-        { label: "Pengalaman Konten", value: "1,000+" },
-        { label: "Fokus Audiens", value: "Gen Z & Millennial" },
-        { label: "Ekosistem Dominan", value: "Shopee & TikTok" },
-        { label: "Konversi Konten", value: "High CTR FYP" }
-      ],
-      testimonials: [
-        {
-          quote: "Hasil konten promo dari Doyz luar biasa! Engagement tinggi dan link affiliate terkonversi sangat signifikan ke penjualan toko kami.",
-          brand: "Local Fashion Brand Partner",
-          role: "E-Commerce Manager",
-          rating: 5
-        },
-        {
-          quote: "Hook videonya selalu pas dengan selera Gen Z. Sangat profesional, komunikasi cepat, dan eksekusi kampanye rapi.",
-          brand: "Beauty & Lifestyle Merchant",
-          role: "Marketing Lead",
-          rating: 5
-        }
       ]
     };
 
     function App() {
       const [theme, setTheme] = useState('dark');
       const [profile, setProfile] = useState(INITIAL_CV_DATA);
-      const [isPreloading, setIsPreloading] = useState(true);
       const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-      const [isImportModalOpen, setIsImportModalOpen] = useState(false);
-      const [rawCvInput, setRawCvInput] = useState('');
-      const [copiedField, setCopiedField] = useState(null);
-      const [toastMessage, setToastMessage] = useState(null);
-      
-      const fileInputRef = useRef(null);
 
-      const [campaignEstViews, setCampaignEstViews] = useState(50000);
-      const [contactForm, setContactForm] = useState({ name: '', email: '', message: '', budget: 'Standard' });
-      const
-  
+      return (
+        <div className="min-h-screen font-sans bg-slate-950 text-slate-100">
+
+          {/* Sticky Header Navbar */}
+          <header className="sticky top-0 z-40 backdrop-blur-md border-b bg-slate-950/80 border-slate-800/80">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+              
+              <a href="#hero" className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-sky-500/20">
+                  {profile.avatarInitials}
+                </div>
+                <div>
+                  <span className="font-extrabold text-lg tracking-tight block leading-tight">
+                    {profile.fullName}
+                  </span>
+                  <span className="text-[10px] font-semibold text-sky-500 tracking-wider uppercase block">
+                    Official Portfolio
+                  </span>
+                </div>
+              </a>
+
+              <nav className="hidden md:flex items-center space-x-6 font-medium text-sm">
+                <a href="#tentang" className="hover:text-sky-500 transition-colors">Tentang</a>
+                <a href="#keahlian" className="hover:text-sky-500 transition-colors">Keahlian</a>
+                <a href="#kontak" className="hover:text-sky-500 transition-colors">Kontak</a>
+              </nav>
+
+              <div className="hidden md:flex items-center gap-3">
+                <a
+                  href={`https://wa.me/${profile.contact.whatsappRaw}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs shadow-md hover:opacity-95 transition-all"
+                >
+                  <Icon name="comment" />
+                  <span>Chat WhatsApp</span>
+                </a>
+              </div>
+            </div>
+          </header>
+
+          {/* Hero Section */}
+          <section id="hero" className="relative z-10 pt-12 pb-20 md:pt-20 md:pb-28">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border text-xs font-semibold tracking-wide border-sky-500/30 bg-sky-500/10 text-sky-400">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                    <span>Terbuka untuk Endorsement & Affiliate</span>
+                  </div>
+
+                  <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                    Halo, Saya <span className="bg-gradient-to-r from-sky-400 via-indigo-400 to-cyan-400 bg-clip-text text-transparent">{profile.fullName}</span>
+                  </h1>
+
+                  <p className="text-lg sm:text-xl font-medium text-sky-400">
+                    {profile.title}
+                  </p>
+
+                  <p className="text-sm sm:text-base leading-relaxed text-slate-300">
+                    {profile.bioSummary}
+                  </p>
+
+                  <div className="pt-4 flex flex-wrap gap-4 justify-center lg:justify-start">
+                    <a
+                      href={`https://wa.me/${profile.contact.whatsappRaw}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-bold text-sm shadow-xl shadow-sky-500/20 hover:scale-105 transition-all flex items-center gap-2"
+                    >
+                      <span>Mulai Kerjasama</span>
+                      <Icon name="arrow-up-right" />
+                    </a>
+
+                    <a
+                      href={profile.contact.instagramUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-6 py-3.5 rounded-2xl border border-slate-800 bg-slate-900/60 hover:bg-slate-800 text-slate-200 font-bold text-sm transition-all flex items-center gap-2"
+                    >
+                      <Icon name="hashtag" className="text-pink-500" />
+                      <span>{profile.contact.instagram}</span>
+                    </a>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-5 flex justify-center">
+                  <div className="relative w-64 h-64 sm:w-80 sm:h-80 rounded-3xl p-2 bg-gradient-to-tr from-sky-500 via-indigo-500 to-cyan-400 shadow-2xl shadow-sky-500/20">
+                    <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                      <span className="text-6xl font-black tracking-widest text-sky-400">
+                        {profile.avatarInitials}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* Keahlian Section */}
+          <section id="keahlian" className="py-16 border-t border-slate-800/80 bg-slate-900/40">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <h2 className="text-2xl font-bold text-center mb-8 text-sky-400">Keahlian Utama</h2>
+              <div className="flex flex-wrap gap-3 justify-center">
+                {profile.primarySkills.map((skill, index) => (
+                  <span key={index} className="px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-sm font-semibold text-slate-200">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <footer className="border-t border-slate-800 py-8 text-center text-xs text-slate-500">
+            <p>© 2026 {profile.fullName}. All rights reserved.</p>
+          </footer>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
