@@ -1,936 +1,726 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marsha Lenathea — Portfolio</title>
-    <meta name="description" content="Portofolio Marsha Lenathea, member JKT48. Project by Priadiprakasa.">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,500;1,6..96,400&family=Young+Serif&family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Alex+Brush&family=Allura&family=Noto+Sans+JP:wght@500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
-
-    <!-- GSAP untuk animasi. Kalau gagal dimuat, halaman tetap tampil utuh tanpa animasi. -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script>
-        if (window.gsap && window.ScrollTrigger && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-            document.documentElement.classList.add('anim');
-        }
-    </script>
-
-    <style>
-        :root {
-            --paper: #ededed;
-            --paper-2: #e4e4e2;
-            --ink: #1f1f1f;
-            --muted: #5c5c5a;
-            --gutter: clamp(20px, 6vw, 96px);
-            /* 1u = 1% lebar poster referensi 16:9, dibatasi tinggi layar */
-            --u: min(1vw, 1.777svh);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body {
-            background: var(--paper);
-            color: var(--ink);
-            font-family: "Crimson Pro", serif;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-        }
-        body.is-locked { overflow: hidden; }
-        img { display: block; max-width: 100%; }
-        a { color: inherit; text-decoration: none; }
-        button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
-        ::selection { background: var(--ink); color: var(--paper); }
-
-        /* ================= LOADER ================= */
-        .loader { display: none; position: fixed; inset: 0; z-index: 200; }
-        .anim .loader { display: block; }
-        .loader-panels { position: absolute; inset: 0; display: flex; }
-        .loader-panel { flex: 1; background: var(--ink); margin-right: -1px; }
-        .loader-inner {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 22px;
-            color: var(--paper);
-        }
-        .loader-jp { display: flex; overflow: hidden; font-family: "Noto Sans JP", sans-serif; font-size: clamp(40px, 7vw, 96px); letter-spacing: .3em; line-height: 1.15; }
-        .loader-jp span { display: inline-block; }
-        .loader-bar { width: min(320px, 60vw); height: 1px; background: rgba(237,237,237,.2); }
-        .loader-bar i { display: block; height: 100%; background: var(--paper); transform: scaleX(0); transform-origin: left; }
-        .loader-meta { width: min(320px, 60vw); display: flex; justify-content: space-between; font-family: "Jost", sans-serif; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; }
-
-        /* ================= CURSOR ================= */
-        .cursor {
-            position: fixed; left: 0; top: 0; z-index: 150;
-            width: 10px; height: 10px; margin: -5px 0 0 -5px;
-            border-radius: 50%;
-            background: #fff;
-            mix-blend-mode: difference;
-            pointer-events: none;
-            display: none;
-            transition: width .35s cubic-bezier(.2,.8,.2,1), height .35s cubic-bezier(.2,.8,.2,1), margin .35s cubic-bezier(.2,.8,.2,1);
-        }
-        .has-cursor .cursor { display: block; }
-        .cursor.is-hover { width: 56px; height: 56px; margin: -28px 0 0 -28px; }
-
-        /* ================= NAV ================= */
-        .nav {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 22px var(--gutter);
-            color: #fff;
-            mix-blend-mode: difference;
-            transform: translateY(-110%);
-            transition: transform .7s cubic-bezier(.16,1,.3,1);
-        }
-        .nav.is-visible, .menu-open .nav { transform: none; }
-        .nav-logo { font-family: "Bodoni Moda", serif; font-size: 22px; letter-spacing: .04em; }
-        .nav-logo em { font-family: "Alex Brush", cursive; font-style: normal; font-size: 26px; margin-left: 4px; }
-        .nav-links { display: flex; gap: clamp(18px, 2.6vw, 40px); font-family: "Jost", sans-serif; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; }
-        .nav-links a { position: relative; padding: 4px 0; }
-        .nav-links sup { font-size: 9px; margin-right: 5px; opacity: .6; }
-        .nav-links a::after {
-            content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor;
-            transform: scaleX(0); transform-origin: right; transition: transform .5s cubic-bezier(.16,1,.3,1);
-        }
-        .nav-links a:hover::after, .nav-links a.is-active::after { transform: scaleX(1); transform-origin: left; }
-        .nav-toggle { display: none; font-family: "Jost", sans-serif; font-size: 13px; letter-spacing: .18em; text-transform: uppercase; }
-
-        .menu {
-            position: fixed; inset: 0; z-index: 90;
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 0 var(--gutter);
-            background: var(--ink); color: var(--paper);
-            clip-path: inset(0 0 100% 0);
-            visibility: hidden;
-            transition: clip-path .8s cubic-bezier(.76,0,.24,1), visibility 0s .8s;
-        }
-        .menu-open .menu { clip-path: inset(0 0 0 0); visibility: visible; transition: clip-path .8s cubic-bezier(.76,0,.24,1); }
-        .menu a { display: block; overflow: hidden; font-family: "Bodoni Moda", serif; font-size: clamp(44px, 12vw, 80px); line-height: 1.15; }
-        .menu a span { display: inline-block; transform: translateY(110%); transition: transform .8s cubic-bezier(.16,1,.3,1); }
-        .menu a sup { font-family: "Jost", sans-serif; font-size: 12px; letter-spacing: .1em; vertical-align: top; margin-right: 10px; opacity: .5; }
-        .menu-open .menu a span { transform: none; }
-        .menu a:nth-child(1) span { transition-delay: .25s; }
-        .menu a:nth-child(2) span { transition-delay: .31s; }
-        .menu a:nth-child(3) span { transition-delay: .37s; }
-        .menu a:nth-child(4) span { transition-delay: .43s; }
-        .menu a:nth-child(5) span { transition-delay: .49s; }
-        .menu-foot { margin-top: 48px; font-family: "Jost", sans-serif; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; opacity: .6; }
-
-        /* ================= HERO ================= */
-        .hero { position: relative; background: var(--paper); }
-        .stage { position: relative; height: 100vh; height: 100svh; min-height: 480px; overflow: hidden; }
-
-        .frame {
-            position: absolute; inset: calc(2 * var(--u));
-            border: calc(0.22 * var(--u)) solid var(--ink);
-            z-index: 1; pointer-events: none;
-            clip-path: inset(0 0 0 0);
-        }
-
-        .layer-back { position: absolute; inset: 0; z-index: 2; }
-        .title {
-            position: absolute; left: 5.4%; right: 4.6%; top: 34.8%;
-            display: flex; justify-content: space-between;
-            font-family: "Bodoni Moda", serif; font-weight: 400;
-            font-size: calc(16.8 * var(--u));
-            font-variation-settings: "opsz" 20;
-            line-height: 1;
-        }
-        .title .ch { display: block; overflow: hidden; padding: .05em .03em; margin: -.05em -.03em; }
-        .title .ci { display: block; }
-
-        .jp {
-            position: absolute; left: 5.6%; top: 28.6%;
-            display: flex; gap: calc(1.9 * var(--u));
-            font-family: "Noto Sans JP", sans-serif; font-weight: 500;
-            font-size: calc(3.4 * var(--u)); line-height: 1;
-        }
-        .jp span { display: inline-block; }
-
-        .subject { position: absolute; left: 49.3%; bottom: 0; height: 94.9%; transform: translateX(-50%); z-index: 3; }
-        .subject img { height: 100%; width: auto; }
-
-        .layer-front { position: absolute; inset: 0; z-index: 4; }
-        .lenathea {
-            position: absolute; left: 74.4%; top: 59%;
-            font-family: "Alex Brush", cursive;
-            font-size: calc(5.6 * var(--u)); line-height: 1.2;
-        }
-
-        .intro { position: absolute; left: 6.4%; top: 7%; display: flex; gap: calc(1.1 * var(--u)); }
-        .logo { display: flex; flex-direction: column; align-items: flex-start; gap: calc(0.4 * var(--u)); }
-        .logo-jkt { display: flex; align-items: center; font-family: "Jost", sans-serif; font-weight: 300; font-size: calc(1.65 * var(--u)); line-height: .9; }
-        .logo-jkt span { display: block; }
-        .logo-jkt .bar { width: calc(0.08 * var(--u)); height: calc(2.4 * var(--u)); background: var(--ink); margin-left: calc(0.5 * var(--u)); }
-        .newera { font-family: "Jost", sans-serif; font-size: calc(0.8 * var(--u)); font-style: italic; background: var(--ink); color: var(--paper); padding: 0 calc(0.25 * var(--u)); }
-        .newera b { color: transparent; -webkit-text-stroke: calc(0.05 * var(--u)) var(--paper); }
-        .intro h2 { font-family: "Young Serif", serif; font-weight: 400; font-size: calc(1.75 * var(--u)); letter-spacing: calc(0.08 * var(--u)); line-height: 1; margin-bottom: calc(0.55 * var(--u)); }
-        .intro p { font-size: calc(1.05 * var(--u)); line-height: 1.45; }
-
-        .dated { position: absolute; left: 71.3%; top: 15.6%; text-align: center; }
-        .dated .date { font-family: "Allura", cursive; font-size: calc(1.85 * var(--u)); line-height: 1; }
-        .dated p { font-size: calc(1.05 * var(--u)); font-weight: 600; margin-top: calc(0.2 * var(--u)); }
-
-        .drips { position: absolute; right: calc(2 * var(--u)); top: calc(2 * var(--u)); width: calc(12.6 * var(--u)); }
-        .drips svg { width: 100%; height: auto; display: block; }
-        .drips line { stroke-dasharray: 1 1; }
-
-        .scroll-cue {
-            position: absolute; right: calc(3.4 * var(--u)); bottom: 12%;
-            display: flex; align-items: center; gap: 10px;
-            font-family: "Jost", sans-serif; font-size: max(10px, calc(0.75 * var(--u))); letter-spacing: .3em;
-            writing-mode: vertical-rl; text-transform: uppercase;
-        }
-        .scroll-cue i { width: 1px; height: calc(6 * var(--u)); background: rgba(31,31,31,.2); position: relative; overflow: hidden; }
-        .scroll-cue i::after { content: ""; position: absolute; inset: 0; background: var(--ink); animation: cue 2s cubic-bezier(.76,0,.24,1) infinite; }
-        @keyframes cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
-
-        .notes { position: absolute; inset: 0; z-index: 4; pointer-events: none; }
-        .notes > * { pointer-events: auto; }
-        .news { position: absolute; left: 6.3%; top: 72.8%; width: calc(29 * var(--u)); }
-        .news h3 { font-family: "Young Serif", serif; font-style: italic; font-weight: 400; font-size: calc(1.8 * var(--u)); line-height: 1.1; transform: skewX(-8deg); transform-origin: left; }
-        .news p { font-size: calc(1.1 * var(--u)); text-align: center; line-height: 1.4; margin-top: calc(0.3 * var(--u)); }
-        .question { position: absolute; left: 66.5%; top: 76.5%; width: calc(25.5 * var(--u)); }
-        .question h3 { font-family: "Young Serif", serif; font-weight: 400; font-size: calc(1.95 * var(--u)); line-height: 1.1; }
-        .question .quote { font-size: calc(1.2 * var(--u)); font-weight: 700; text-align: center; margin-top: calc(0.5 * var(--u)); }
-        .question .by { font-size: calc(1.1 * var(--u)); text-align: right; margin-top: calc(0.7 * var(--u)); }
-
-        /* ================= MARQUEE ================= */
-        .marquee { position: relative; z-index: 5; overflow: hidden; padding: clamp(14px, 2vw, 26px) 0; background: var(--ink); color: var(--paper); }
-        .marquee-track { display: flex; width: max-content; animation: marquee 32s linear infinite; }
-        .marquee-track span { display: flex; align-items: center; gap: clamp(20px, 3vw, 48px); padding-right: clamp(20px, 3vw, 48px); font-family: "Bodoni Moda", serif; font-style: italic; font-size: clamp(26px, 4.4vw, 64px); white-space: nowrap; line-height: 1.1; }
-        .marquee-track b { font-weight: 400; }
-        .marquee-track .jpx { font-family: "Noto Sans JP", sans-serif; font-style: normal; font-size: .7em; }
-        .marquee-track .star { font-style: normal; font-size: .5em; }
-        @keyframes marquee { to { transform: translateX(-50%); } }
-
-        /* ================= SECTION UMUM ================= */
-        .section { position: relative; padding: clamp(96px, 13vw, 180px) var(--gutter); }
-        .eyebrow {
-            display: inline-flex; align-items: center; gap: 14px;
-            font-family: "Jost", sans-serif; font-size: 12px; letter-spacing: .28em; text-transform: uppercase;
-        }
-        .eyebrow b { font-weight: 500; }
-        .eyebrow::before { content: ""; width: 40px; height: 1px; background: currentColor; }
-        .display {
-            font-family: "Bodoni Moda", serif; font-weight: 400;
-            font-size: clamp(46px, 7.4vw, 124px);
-            line-height: .98; letter-spacing: -.01em;
-        }
-        .display em { font-family: "Alex Brush", cursive; font-style: normal; font-weight: 400; font-size: 1.05em; letter-spacing: 0; }
-        .w { display: inline-block; overflow: hidden; vertical-align: top; padding: .06em .16em .16em; margin: -.06em -.16em -.16em; }
-        .wi { display: inline-block; }
-
-        /* ================= 01 PROFIL ================= */
-        .profile-grid {
-            display: grid; grid-template-columns: 5fr 7fr; gap: clamp(40px, 7vw, 120px);
-            align-items: start; margin-top: clamp(40px, 6vw, 80px);
-        }
-        .profile-media { position: relative; }
-        .profile-img { overflow: hidden; aspect-ratio: 4 / 5; background: var(--paper-2); }
-        .profile-img img { width: 100%; height: 118%; object-fit: cover; object-position: 50% 15%; filter: grayscale(1) contrast(1.05); transition: filter 1.6s ease .4s; }
-        .profile-media.in .profile-img img, .profile-media:hover .profile-img img { filter: none; }
-        .profile-media figcaption { display: flex; justify-content: space-between; margin-top: 14px; font-family: "Jost", sans-serif; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-        .profile-jp {
-            position: absolute; top: 0; right: calc(-1 * clamp(30px, 4vw, 64px));
-            writing-mode: vertical-rl; font-family: "Noto Sans JP", sans-serif; font-size: clamp(18px, 2vw, 28px); letter-spacing: .4em;
-        }
-        .profile-body .display { margin-bottom: clamp(24px, 3vw, 40px); }
-        .lead { max-width: 34em; font-size: clamp(19px, 1.7vw, 25px); line-height: 1.5; color: #333; }
-        .facts { margin-top: clamp(40px, 5vw, 64px); display: grid; grid-template-columns: 1fr 1fr; column-gap: 40px; }
-        .fact { position: relative; padding: 18px 0 20px; }
-        .rule { position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--ink); transform-origin: left; }
-        .fact dt { font-family: "Jost", sans-serif; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-        .fact dd { font-family: "Young Serif", serif; font-size: clamp(18px, 1.5vw, 22px); }
-        .jiko { margin-top: clamp(40px, 5vw, 64px); padding-left: 24px; border-left: 1px solid var(--ink); }
-        .jiko span { font-family: "Jost", sans-serif; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
-        .jiko p { margin-top: 6px; font-family: "Allura", cursive; font-size: clamp(28px, 2.6vw, 40px); line-height: 1.25; }
-
-        /* ================= 02 AKTIVITAS ================= */
-        .acts-head { display: flex; justify-content: space-between; align-items: end; gap: 40px; flex-wrap: wrap; }
-        .acts-head .display { margin-top: 28px; }
-        .acts-head p { max-width: 26em; font-size: clamp(17px, 1.3vw, 20px); color: #333; line-height: 1.5; }
-        .acts { margin-top: clamp(48px, 6vw, 88px); list-style: none; }
-        .act {
-            position: relative;
-            display: grid; grid-template-columns: 90px 1fr 1.1fr 60px; align-items: center; gap: 24px;
-            padding: clamp(26px, 3vw, 44px) 0;
-        }
-        .acts .act:last-child::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--ink); }
-        .act-num { font-family: "Jost", sans-serif; font-size: 13px; letter-spacing: .2em; color: var(--muted); }
-        .act-title { font-family: "Bodoni Moda", serif; font-weight: 400; font-size: clamp(38px, 5.2vw, 84px); line-height: 1; transition: translate .6s cubic-bezier(.16,1,.3,1); }
-        .act-desc { font-size: clamp(16px, 1.25vw, 19px); line-height: 1.5; color: #333; }
-        .act-arrow { justify-self: end; width: 48px; height: 48px; border: 1px solid var(--ink); border-radius: 50%; display: grid; place-items: center; font-family: "Jost", sans-serif; transition: background .4s, color .4s, rotate .6s cubic-bezier(.16,1,.3,1); }
-        .act:hover .act-title { translate: 18px 0; font-style: italic; }
-        .act:hover .act-arrow { background: var(--ink); color: var(--paper); rotate: -45deg; }
-
-        .act-preview {
-            position: fixed; left: 0; top: 0; z-index: 60;
-            width: 240px; height: 300px; margin: -150px 0 0 -120px;
-            pointer-events: none;
-        }
-        .act-preview-inner { width: 100%; height: 100%; overflow: hidden; opacity: 0; scale: .6; transition: opacity .35s, scale .5s cubic-bezier(.16,1,.3,1); }
-        .act-preview.is-on .act-preview-inner { opacity: 1; scale: 1; }
-        .act-preview img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* ================= 03 QUOTE ================= */
-        .quote-sec { overflow: hidden; text-align: center; background: var(--ink); color: var(--paper); }
-        .quote-bg {
-            position: absolute; top: 50%; left: 0; transform: translateY(-50%);
-            white-space: nowrap; pointer-events: none;
-            font-family: "Noto Sans JP", sans-serif; font-size: clamp(160px, 26vw, 420px); line-height: 1;
-            color: transparent; -webkit-text-stroke: 1px rgba(237,237,237,.12);
-        }
-        .quote-sec .eyebrow { position: relative; }
-        .quote-text {
-            position: relative; max-width: 14em; margin: clamp(32px, 4vw, 56px) auto 0;
-            font-family: "Bodoni Moda", serif; font-style: italic; font-weight: 400;
-            font-size: clamp(44px, 7vw, 116px); line-height: 1.05;
-        }
-        .quote-sign { position: relative; display: inline-block; margin-top: clamp(28px, 3vw, 44px); font-family: "Alex Brush", cursive; font-size: clamp(34px, 3.6vw, 56px); }
-
-        /* ================= 04 GALERI ================= */
-        .gallery { position: relative; padding: clamp(96px, 12vw, 160px) 0; }
-        .gallery-head { display: flex; justify-content: space-between; align-items: end; gap: 32px; flex-wrap: wrap; padding: 0 var(--gutter); }
-        .gallery-head .display { margin-top: 28px; }
-        .gallery-head p { font-family: "Jost", sans-serif; font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); }
-        .gallery-scroller { margin-top: clamp(40px, 5vw, 64px); padding-bottom: 40px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-        .gallery-scroller::-webkit-scrollbar { display: none; }
-        .track { display: flex; gap: clamp(16px, 2.4vw, 36px); width: max-content; padding: 0 var(--gutter); }
-        .panel { position: relative; flex: none; height: clamp(360px, 58vh, 620px); scroll-snap-align: center; }
-        .panel-img { height: 100%; overflow: hidden; background: var(--paper-2); }
-        .panel-img img { height: 100%; width: 116%; max-width: none; margin-left: -8%; object-fit: cover; }
-        .panel figcaption { position: absolute; left: 0; right: 0; bottom: -28px; display: flex; justify-content: space-between; font-family: "Jost", sans-serif; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
-        .p-tall { aspect-ratio: 4 / 5; }
-        .p-slim { aspect-ratio: 2 / 3; }
-        .p-type {
-            aspect-ratio: 3 / 4;
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: clamp(24px, 2.6vw, 40px);
-            background: var(--ink); color: var(--paper);
-        }
-        .p-type .big-jp { align-self: flex-end; writing-mode: vertical-rl; font-family: "Noto Sans JP", sans-serif; font-size: clamp(70px, 9vh, 130px); line-height: 1; }
-        .p-type small { font-family: "Jost", sans-serif; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; opacity: .7; }
-        .p-end { aspect-ratio: 3 / 4; display: flex; flex-direction: column; justify-content: center; gap: 28px; padding: 0 clamp(10px, 2vw, 40px); }
-        .p-end p { font-family: "Allura", cursive; font-size: clamp(40px, 4.4vw, 72px); line-height: 1.1; }
-        .btn {
-            align-self: flex-start; position: relative; isolation: isolate; overflow: hidden;
-            display: inline-flex; align-items: center; gap: 12px;
-            padding: 16px 28px; border: 1px solid var(--ink); border-radius: 999px;
-            font-family: "Jost", sans-serif; font-size: 12px; letter-spacing: .22em; text-transform: uppercase;
-            transition: color .5s;
-        }
-        .btn::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--ink); transform: translateY(101%); transition: transform .5s cubic-bezier(.16,1,.3,1); }
-        .btn:hover { color: var(--paper); }
-        .btn:hover::before { transform: none; }
-        .gallery-progress { display: none; height: 1px; margin: 40px var(--gutter) 0; background: rgba(31,31,31,.15); }
-        .gallery-progress i { display: block; height: 100%; background: var(--ink); transform: scaleX(0); transform-origin: left; }
-        .gallery.is-pinned { height: 100vh; padding: 0; display: flex; flex-direction: column; justify-content: center; }
-        .gallery.is-pinned .gallery-scroller { overflow: visible; }
-        .gallery.is-pinned .gallery-progress { display: block; }
-
-        /* ================= 05 FOOTER ================= */
-        .footer { overflow: hidden; padding: clamp(96px, 12vw, 160px) var(--gutter) 0; background: var(--ink); color: var(--paper); }
-        .footer .display { max-width: 9em; margin-top: clamp(24px, 3vw, 40px); }
-        .socials { list-style: none; margin-top: clamp(48px, 6vw, 88px); display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid rgba(237,237,237,.25); border-bottom: 1px solid rgba(237,237,237,.25); }
-        .socials li + li { border-left: 1px solid rgba(237,237,237,.25); }
-        .social { position: relative; isolation: isolate; overflow: hidden; display: flex; justify-content: space-between; align-items: center; padding: 26px 22px; font-family: "Young Serif", serif; font-size: clamp(18px, 1.6vw, 24px); transition: color .5s; }
-        .social::before { content: ""; position: absolute; inset: 0; z-index: -1; background: var(--paper); transform: translateY(101%); transition: transform .6s cubic-bezier(.16,1,.3,1); }
-        .social:hover { color: var(--ink); }
-        .social:hover::before { transform: none; }
-        .social span { font-family: "Jost", sans-serif; transition: transform .5s cubic-bezier(.16,1,.3,1); }
-        .social:hover span { transform: rotate(45deg); }
-        .footer-meta { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; margin-top: clamp(48px, 6vw, 80px); font-family: "Jost", sans-serif; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; }
-        .footer-meta > span:first-child { opacity: .75; }
-        .footer-meta .date { font-family: "Allura", cursive; font-size: 26px; letter-spacing: 0; text-transform: none; }
-        .to-top { display: inline-flex; align-items: center; gap: 12px; }
-        .to-top i { width: 44px; height: 44px; border: 1px solid currentColor; border-radius: 50%; display: grid; place-items: center; font-style: normal; }
-        .footer-giant {
-            display: flex; justify-content: space-between;
-            margin-top: clamp(40px, 5vw, 72px);
-            font-family: "Bodoni Moda", serif; font-size: 21.5vw; line-height: .8;
-            font-variation-settings: "opsz" 20;
-        }
-        .footer-giant .ch { display: block; overflow: hidden; }
-        .footer-giant .ci { display: block; }
-        .footer-copy { padding: 22px 0 26px; text-align: center; font-family: "Jost", sans-serif; font-size: 11px; letter-spacing: .2em; text-transform: uppercase; opacity: .5; }
-
-        /* ================= RESPONSIF ================= */
-        @media (max-width: 900px) {
-            .nav-links { display: none; }
-            .nav-toggle { display: block; }
-            .profile-grid { grid-template-columns: 1fr; }
-            .profile-media { max-width: 520px; }
-            .act { grid-template-columns: 44px 1fr 44px; row-gap: 10px; gap: 14px; }
-            .act-desc { grid-column: 2 / 3; }
-            .act-arrow { grid-row: 1; grid-column: 3; width: 40px; height: 40px; }
-            .socials { grid-template-columns: 1fr 1fr; }
-            .socials li:nth-child(3) { border-left: 0; }
-            .socials li:nth-child(n+3) { border-top: 1px solid rgba(237,237,237,.25); }
-        }
-        @media (max-width: 560px) {
-            .facts { grid-template-columns: 1fr; }
-            .profile-jp { display: none; }
-            .socials { grid-template-columns: 1fr; }
-            .socials li + li { border-left: 0; border-top: 1px solid rgba(237,237,237,.25); }
-            .footer-meta { flex-direction: column; align-items: flex-start; }
-        }
-
-        /* Hero di layar tegak (HP) */
-        @media (max-aspect-ratio: 1/1) {
-            :root { --u: 1vw; }
-            .stage { min-height: 560px; }
-            .frame { inset: 3vw; border-width: .5vw; }
-            .intro { left: 7%; top: 6%; gap: 2.5vw; }
-            .logo-jkt { font-size: 4vw; }
-            .logo-jkt .bar { width: .25vw; height: 6vw; margin-left: 1.2vw; }
-            .newera { font-size: 2vw; padding: 0 .6vw; }
-            .newera b { -webkit-text-stroke-width: .12vw; }
-            .intro h2 { font-size: 4.6vw; margin-bottom: 1.4vw; }
-            .intro p { font-size: 3vw; }
-            .drips { width: 22vw; right: 3vw; top: 3vw; }
-            .dated { left: auto; right: 7%; top: 17%; text-align: right; }
-            .dated .date { font-size: 5vw; }
-            .dated p { font-size: 2.8vw; margin-top: .8vw; }
-            .jp { left: 6%; top: 27%; font-size: 6.5vw; gap: 3.5vw; }
-            .title { left: 5%; right: 5%; top: 31%; font-size: 21vw; }
-            .subject { left: 44%; height: 64%; }
-            .lenathea { left: auto; right: 6%; top: 42%; font-size: 10vw; }
-            .scroll-cue { right: 5.5vw; bottom: 6%; }
-            .notes { position: static; display: grid; gap: 8vw; padding: 10vw 7vw 12vw; }
-            .news, .question { position: static; width: auto; }
-            .news h3 { font-size: 6vw; }
-            .news p { font-size: 4vw; text-align: left; margin-top: 1.5vw; }
-            .news p br { display: none; }
-            .question h3 { font-size: 6vw; }
-            .question .quote { font-size: 4.2vw; text-align: left; margin-top: 1.5vw; }
-            .question .by { font-size: 3.8vw; margin-top: 2vw; }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            html { scroll-behavior: auto; }
-            .marquee-track, .scroll-cue i::after { animation: none; }
-        }
-    </style>
+    <title>Personal Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="https://i.postimg.cc/9fqYVvxh/logo.png" type="image/x-icon">
 </head>
 <body>
-
-    <!-- ================= LOADER ================= -->
-    <div class="loader" aria-hidden="true">
-        <div class="loader-panels"><i class="loader-panel"></i><i class="loader-panel"></i><i class="loader-panel"></i><i class="loader-panel"></i><i class="loader-panel"></i></div>
-        <div class="loader-inner">
-            <div class="loader-jp" lang="ja"><span>マ</span><span>ー</span><span>シ</span><span>ャ</span></div>
-            <div class="loader-bar"><i></i></div>
-            <div class="loader-meta"><span>Marsha Lenathea</span><span class="loader-count">000</span></div>
-        </div>
-    </div>
-
-    <div class="cursor" aria-hidden="true"></div>
-
-    <!-- ================= NAV ================= -->
-    <header class="nav" id="nav">
-        <a href="#home" class="nav-logo">Marsha<em>L.</em></a>
-        <nav class="nav-links" aria-label="Navigasi utama">
-            <a href="#profil"><sup>01</sup>Profil</a>
-            <a href="#aktivitas"><sup>02</sup>Aktivitas</a>
-            <a href="#quote"><sup>03</sup>Quote</a>
-            <a href="#galeri"><sup>04</sup>Galeri</a>
-            <a href="#kontak"><sup>05</sup>Kontak</a>
-        </nav>
-        <button class="nav-toggle" aria-expanded="false" aria-controls="menu">Menu</button>
-    </header>
-
-    <div class="menu" id="menu">
-        <a href="#profil"><span><sup>01</sup>Profil</span></a>
-        <a href="#aktivitas"><span><sup>02</sup>Aktivitas</span></a>
-        <a href="#quote"><span><sup>03</sup>Quote</span></a>
-        <a href="#galeri"><span><sup>04</sup>Galeri</span></a>
-        <a href="#kontak"><span><sup>05</sup>Kontak</span></a>
-        <p class="menu-foot">JKT48 · New Era · Jakarta</p>
-    </div>
-
     <main>
-        <!-- ================= HERO ================= -->
-        <section class="hero" id="home">
-            <div class="stage">
-                <div class="frame"></div>
-
-                <div class="layer-back" id="parallax-bg">
-                    <div class="jp" lang="ja" aria-hidden="true"><span>マ</span><span>ー</span><span>シ</span><span>ャ</span></div>
-                    <h1 class="title" aria-label="Marsha">
-                        <span class="ch"><span class="ci">M</span></span><span class="ch"><span class="ci">A</span></span><span class="ch"><span class="ci">R</span></span><span class="ch"><span class="ci">S</span></span><span class="ch"><span class="ci">H</span></span><span class="ch"><span class="ci">A</span></span>
-                    </h1>
-                </div>
-
-                <div class="subject">
-                    <img id="parallax-subject" src="marsha.png" alt="Marsha Lenathea">
-                </div>
-
-                <div class="layer-front">
-                    <div class="intro">
-                        <div class="logo" aria-label="JKT48 New Era">
-                            <div class="logo-jkt"><div><span>JK</span><span>48</span></div><span class="bar"></span></div>
-                            <div class="newera"><b>NEW</b>ERA</div>
-                        </div>
-                        <div>
-                            <h2>JIKOSOUKAI</h2>
-                            <p>Seperti pizza yang dinanti-nantikan<br>semua orang, selalu nantikan aku ya!<br>Halo aku Marsha!</p>
-                        </div>
-                    </div>
-
-                    <div class="dated">
-                        <div class="date">Jakarta,09-01-2006</div>
-                        <p>Project By Priadiprakasa</p>
-                    </div>
-
-                    <div class="drips" aria-hidden="true">
-                        <svg viewBox="0 0 165 110" fill="none" stroke="#1f1f1f" stroke-linecap="round" stroke-width="3.2">
-                            <line pathLength="1" x1="4"   y1="0" x2="4"   y2="16"/>
-                            <line pathLength="1" x1="24"  y1="0" x2="24"  y2="40"/>
-                            <line pathLength="1" x1="46"  y1="0" x2="46"  y2="92"/>
-                            <line pathLength="1" x1="68"  y1="0" x2="68"  y2="64"/>
-                            <line pathLength="1" x1="90"  y1="0" x2="90"  y2="84"/>
-                            <line pathLength="1" x1="110" y1="0" x2="110" y2="106"/>
-                            <line pathLength="1" x1="132" y1="0" x2="132" y2="56"/>
-                            <line pathLength="1" x1="160" y1="0" x2="160" y2="30"/>
-                        </svg>
-                    </div>
-
-                    <div class="lenathea">Lenathea</div>
-
-                    <a href="#profil" class="scroll-cue">Scroll<i></i></a>
-                </div>
-            </div>
-
-            <!-- Di layar lebar menumpang di atas stage; di HP turun ke bawah foto -->
-            <div class="notes">
-                <div class="news">
-                    <h3>Current News !!</h3>
-                    <p>Marsha adalah member JKT48 yang dijuluki sebagai anime <br>hidup karena parasnya yang sangat rupawan.</p>
-                </div>
-                <div class="question">
-                    <h3>The Question Is:</h3>
-                    <p class="quote">It's not impossible, it's just hard</p>
-                    <p class="by">~Marsha Lenathea~</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= MARQUEE ================= -->
-        <div class="marquee" aria-hidden="true">
-            <div class="marquee-track">
-                <span>Marsha Lenathea <b class="star">✦</b> <b class="jpx">マーシャ</b> <b class="star">✦</b> JKT48 <b class="star">✦</b> New Era <b class="star">✦</b></span>
-                <span>Marsha Lenathea <b class="star">✦</b> <b class="jpx">マーシャ</b> <b class="star">✦</b> JKT48 <b class="star">✦</b> New Era <b class="star">✦</b></span>
-            </div>
-        </div>
-
-        <!-- ================= 01 PROFIL ================= -->
-        <section class="section" id="profil">
-            <span class="eyebrow" data-reveal><b>01</b> Profil</span>
-            <div class="profile-grid">
-                <figure class="profile-media">
-                    <div class="profile-img"><img src="img/01.jpg" alt="Potret Marsha Lenathea bergaun cokelat"></div>
-                    <figcaption><span>No. 001 — Portrait</span><span>JKT48</span></figcaption>
-                    <span class="profile-jp" lang="ja" aria-hidden="true">マーシャ</span>
+        <aside class="sidebar " data-sidebar>
+            <div class="sidebar-info">
+                <figure class="avatar-box">
+                    <img src="waguri.webp" alt="avatar" width="80">
                 </figure>
 
-                <div class="profile-body">
-                    <h2 class="display" data-split>Halo, aku <em>Marsha!</em></h2>
-                    <p class="lead" data-reveal>
-                        Marsha Lenathea adalah member JKT48 yang dijuluki sebagai anime hidup karena parasnya yang sangat rupawan.
-                        Lahir di Jakarta, saat ini ia aktif di berbagai kegiatan teater dan media.
-                    </p>
-
-                    <dl class="facts">
-                        <div class="fact"><i class="rule"></i><dt>Nama</dt><dd>Marsha Lenathea</dd></div>
-                        <div class="fact"><i class="rule"></i><dt>Lahir</dt><dd>Jakarta, 9 Januari 2006</dd></div>
-                        <div class="fact"><i class="rule"></i><dt>Grup</dt><dd>JKT48</dd></div>
-                        <div class="fact"><i class="rule"></i><dt>Julukan</dt><dd>Anime hidup</dd></div>
-                    </dl>
-
-                    <blockquote class="jiko" data-reveal>
-                        <span>Perkenalan · 自己紹介</span>
-                        <p>Seperti pizza yang dinanti-nantikan semua orang, selalu nantikan aku ya!</p>
-                    </blockquote>
+                <div class="info-content">
+                    <h1 class="name" title="Richard Hanrick">Asep Gustiawan</h1>
+                    <p class="title">Web Developer</p>
                 </div>
-            </div>
-        </section>
 
-        <!-- ================= 02 AKTIVITAS ================= -->
-        <section class="section" id="aktivitas" style="padding-top: 0;">
-            <div class="acts-head">
-                <div>
-                    <span class="eyebrow" data-reveal><b>02</b> Aktivitas</span>
-                    <h2 class="display" data-split>Di atas <em>panggung</em></h2>
-                </div>
-                <p data-reveal>Dari teater sampai layar kaca — tempat-tempat Marsha bisa kamu temui.</p>
+                <button class="info-more-btn" data-sidebar-btn>
+                    <span>Show Contacts</span>
+                    <ion-icon name="chevron-down"></ion-icon>
+                </button>
             </div>
 
-            <ul class="acts">
-                <li class="act" data-img="img/07.jpg">
-                    <i class="rule"></i>
-                    <span class="act-num">(01)</span>
-                    <h3 class="act-title">Teater</h3>
-                    <p class="act-desc">Tampil di panggung teater JKT48 bersama member lainnya.</p>
-                    <span class="act-arrow">→</span>
-                </li>
-                <li class="act" data-img="img/02.jpg">
-                    <i class="rule"></i>
-                    <span class="act-num">(02)</span>
-                    <h3 class="act-title">Media</h3>
-                    <p class="act-desc">Hadir di berbagai konten dan program media.</p>
-                    <span class="act-arrow">→</span>
-                </li>
-                <li class="act" data-img="img/06.jpg">
-                    <i class="rule"></i>
-                    <span class="act-num">(03)</span>
-                    <h3 class="act-title">Event</h3>
-                    <p class="act-desc">Bertemu penggemar di berbagai event dan acara JKT48.</p>
-                    <span class="act-arrow">→</span>
-                </li>
-            </ul>
-        </section>
+            <div class="sidebar-info-more">
+                <div class="separator"></div>
 
-        <div class="act-preview" aria-hidden="true"><div class="act-preview-inner"><img src="img/07.jpg" alt=""></div></div>
+                <ul class="contacts-list">
+                    <li class="contact-item">
+                        <div class="icon-box">
+                            <ion-icon name="mail-outline"></ion-icon>
+                        </div>
 
-        <!-- ================= 03 QUOTE ================= -->
-        <section class="section quote-sec" id="quote">
-            <div class="quote-bg" lang="ja" aria-hidden="true">マーシャ マーシャ マーシャ</div>
-            <span class="eyebrow" data-reveal><b>03</b> The Question Is</span>
-            <blockquote>
-                <p class="quote-text">It's not impossible, it's just hard.</p>
-                <footer class="quote-sign">~Marsha Lenathea~</footer>
-            </blockquote>
-        </section>
+                        <div class="contact-info">
+                            <p class="contact-title">Email</p>
 
-        <!-- ================= 04 GALERI ================= -->
-        <section class="gallery" id="galeri">
-            <div class="gallery-head">
-                <div>
-                    <span class="eyebrow" data-reveal><b>04</b> Galeri</span>
-                    <h2 class="display" data-split>Potret <em>Marsha</em></h2>
-                </div>
-                <p data-reveal>Geser untuk melihat →</p>
+                            <a href="mailto:asep.gustiawan@example.com" class="contact-link">asep.gustiawan@example.com</a>
+                        </div>
+                    </li>
+
+                    <li class="contact-item">
+                        <div class="icon-box">
+                            <ion-icon name="phone-portrait-outline"></ion-icon>
+                        </div>
+
+                        <div class="contact-info">
+                            <p class="contact-title">Phone</p>
+
+                            <a href="tel:+6285722233126" class="contact-link">+62 857 2223 3126</a>
+                        </div>
+                    </li>
+
+                    <li class="contact-item">
+                        <div class="icon-box">
+                            <ion-icon name="calendar-outline"></ion-icon>
+                        </div>
+
+                        <div class="contact-info">
+                            <p class="contact-title">Birthday</p>
+
+                            <time datetime="1995-08-17">August 17, 1995</time>
+                        </div>
+                    </li>
+
+                    <li class="contact-item">
+                        <div class="icon-box">
+                            <ion-icon name="location-outline"></ion-icon>
+                        </div>
+
+                        <div class="contact-info">
+                            <p class="contact-title">Location</p>
+
+                            <address>Sumedang, West Java, Indonesia</address>
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="separator"></div>
+
+                <ul class="social-list">
+                    <li class="social-item"><a href="#" class="social-link"><ion-icon name="logo-facebook"></ion-icon></a></li>
+                    <li class="social-item"><a href="#" class="social-link"><ion-icon name="logo-twitter"></ion-icon></a></li>
+                    <li class="social-item"><a href="#" class="social-link"><ion-icon name="logo-instagram"></ion-icon></a></li>
+                </ul>
             </div>
+        </aside>
 
-            <div class="gallery-scroller">
-                <div class="track">
-                    <figure class="panel p-tall">
-                        <div class="panel-img"><img src="img/05.jpg" alt="Marsha dengan kacamata di jalanan kota"></div>
-                        <figcaption><span>No. 01</span><span>Street</span></figcaption>
-                    </figure>
-                    <div class="panel p-type">
-                        <small>JKT48 — New Era</small>
-                        <span class="big-jp" lang="ja">マーシャ</span>
-                        <small>Marsha Lenathea</small>
+        <div class="main-content">
+            <nav class="navbar">
+                <ul class="navbar-list">
+                    <li class="navbar-item"><button class="navbar-link active" data-nav-link>About</button></li>
+                    <li class="navbar-item"><button class="navbar-link" data-nav-link>Resume</button></li>
+                    <li class="navbar-item"><button class="navbar-link" data-nav-link>Portfolio</button></li>
+                    <li class="navbar-item"><button class="navbar-link" data-nav-link>Blog</button></li>
+                    <li class="navbar-item"><button class="navbar-link" data-nav-link>Contact</button></li>
+                </ul>
+            </nav>
+
+            <article class="about active" data-page="about">
+                <header>
+                    <h2 class="h2 article-title">About me</h2>
+                </header>
+
+                <section class="about-text">
+                    <p>I am a passionate web developer with over 5 years of experience in creating responsive and user-friendly websites. I specialize in front-end technologies like HTML, CSS, JavaScript, and React, and I enjoy turning ideas into functional digital solutions.</p>
+                    <p>My goal is to build websites that not only look great but also provide an excellent user experience. I am always eager to learn new technologies and stay updated with the latest trends in web development to deliver high-quality work.</p>
+                </section>
+
+                <section class="service">
+                    <h3 class="h3 service-title">What I'm doing</h3>
+
+                    <ul class="service-list">
+                        <li class="service-item">
+                            <div class="service-icon-box">
+                                <img src="waguri.webp" alt="icon" width="40">
+                            </div>
+
+                            <div class="service-content-box">
+                                <h4 class="h4 service-item-title">Web Design</h4>
+                                <p class="service-item-text">The most modern and high-quality design made at a professional level.</p>
+                            </div>
+                        </li>
+
+                        <li class="service-item">
+                            <div class="service-icon-box">
+                                <img src="waguri.webp" alt="icon" width="40">
+                            </div>
+
+                            <div class="service-content-box">
+                                <h4 class="h4 service-item-title">Web development</h4>
+                                <p class="service-item-text">High-quality development of sites at the professional level.</p>
+                            </div>
+                        </li>
+
+                        <li class="service-item">
+                            <div class="service-icon-box">
+                                <img src="waguri.webp" alt="icon" width="40">
+                            </div>
+
+                            <div class="service-content-box">
+                                <h4 class="h4 service-item-title">Mobile apps</h4>
+                                <p class="service-item-text">Professional development of applications for iOS and Android.</p>
+                            </div>
+                        </li>
+
+                        <li class="service-item">
+                            <div class="service-icon-box">
+                                <img src="waguri.webp" alt="icon" width="40">
+                            </div>
+
+                            <div class="service-content-box">
+                                <h4 class="h4 service-item-title">Photography</h4>
+                                <p class="service-item-text">I make high-quality photos of any category at a professional level.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <section class="testimonials">
+                    <h3 class="h3 testimonials-title">Testimonials</h3>
+
+                    <ul class="testimonials-list has-scrollbar">
+                        <li class="testimonials-item">
+                            <div class="content-card" data-testimonials-item>
+                                <figure class="testimonials-avatar-box">
+                                    <img src="waguri.webp" alt="avatar" data-testimonials-avatar width="60">
+                                </figure>
+
+                                <h4 class="h4 testimonials-item-title" data-testimonials-title>Asep Gustiawan</h4>
+
+                                <div class="testimonials-text" data-testimonials-text>
+                                    <p>Asep did an excellent job on our company website. His attention to detail and professionalism made the process smooth and the result outstanding. Highly recommended for any web development needs.</p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="testimonials-item">
+                            <div class="content-card" data-testimonials-item>
+                                <figure class="testimonials-avatar-box">
+                                    <img src="waguri.webp" alt="avatar" data-testimonials-avatar width="60">
+                                </figure>
+
+                                <h4 class="h4 testimonials-item-title" data-testimonials-title>Jane Smith</h4>
+
+                                <div class="testimonials-text" data-testimonials-text>
+                                    <p>Working with Asep was a great experience. He delivered the project on time and exceeded our expectations. His expertise in modern web technologies is impressive.</p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="testimonials-item">
+                            <div class="content-card" data-testimonials-item>
+                                <figure class="testimonials-avatar-box">
+                                    <img src="waguri.webp" alt="avatar" data-testimonials-avatar width="60">
+                                </figure>
+
+                                <h4 class="h4 testimonials-item-title" data-testimonials-title>Michael Johnson</h4>
+
+                                <div class="testimonials-text" data-testimonials-text>
+                                    <p>Asep's work on our e-commerce site was fantastic. The site is now faster, more user-friendly, and has increased our sales. I would definitely hire him again.</p>
+                                </div>
+                            </div>
+                        </li>
+
+                        <li class="testimonials-item">
+                            <div class="content-card" data-testimonials-item>
+                                <figure class="testimonials-avatar-box">
+                                    <img src="waguri.webp" alt="avatar" data-testimonials-avatar width="60">
+                                </figure>
+
+                                <h4 class="h4 testimonials-item-title" data-testimonials-title>Sarah Wilson</h4>
+
+                                <div class="testimonials-text" data-testimonials-text>
+                                    <p>Asep is a talented developer who brought our vision to life. The website he built is modern, responsive, and exactly what we needed. Great communication throughout the project.</p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+
+                <div class="modal-container " data-modal-container>
+                    <div class="overlay " data-overlay></div>
+
+                    <section class="testimonials-modal">
+                        <button class="modal-close-btn" data-modal-close-btn><ion-icon name="close-outline"></ion-icon></button>
+
+                        <div class="modal-img-wrapper">
+                            <figure class="modal-avatar-box">
+                                <img src="waguri.webp" alt="Asep Gustiawan" width="80" data-modal-img>
+                            </figure>
+
+                            <img src="waguri.webp" alt="quote icon">
+                        </div>
+
+                        <div class="modal-content">
+                            <h4 class="h3 modal-title" data-modal-title>Asep Gustiawan</h4>
+                            <time datetime="2024-01-21">21 January, 2024</time>
+
+                            <div class="modal-text" data-modal-text>
+                                <p>Asep was hired to create a corporate identity. It's modern, clean and with a beautiful design that got a lot of praises from colleagues and visitors. We were very pleased with the work done. He has a lot of experience and is very concerned about the needs of client.</p>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="clients">
+                    <h3 class="h3 clients-title">Clients</h3>
+
+                    <ul class="clients-list has-scrollbar">
+                        <li class="clients-item">
+                            <a href="#"><img src="waguri.webp" alt="logo"></a>
+                        </li>
+
+                        <li class="clients-item">
+                            <a href="#"><img src="waguri.webp" alt="logo"></a>
+                        </li>
+
+                        <li class="clients-item">
+                            <a href="#"><img src="waguri.webp" alt="logo"></a>
+                        </li>
+
+                        <li class="clients-item">
+                            <a href="#"><img src="waguri.webp" alt="logo"></a>
+                        </li>
+
+                        <li class="clients-item">
+                            <a href="#"><img src="waguri.webp" alt="logo"></a>
+                        </li>
+
+                        <li class="clients-item">
+                            <a href="#"><img src="waguri.webp" alt="logo"></a>
+                        </li>
+                    </ul>
+                </section>
+
+            </article>
+            
+            <article class="resume " data-page="resume">
+                <header>
+                    <h2 class="h2 article-title">Resume</h2>
+                </header>
+
+                <section class="timeline">
+                    <div class="title-wrapper">
+                        <div class="icon-box"><ion-icon name="book-outline"></ion-icon></div>
+
+                        <h3 class="h3">Education</h3>
                     </div>
-                    <figure class="panel p-slim">
-                        <div class="panel-img"><img src="img/03.jpg" alt="Swafoto Marsha berkacamata"></div>
-                        <figcaption><span>No. 02</span><span>Selfie</span></figcaption>
-                    </figure>
-                    <figure class="panel p-tall">
-                        <div class="panel-img"><img src="img/08.jpg" alt="Marsha dengan atasan motif bunga"></div>
-                        <figcaption><span>No. 03</span><span>Editorial</span></figcaption>
-                    </figure>
-                    <figure class="panel p-slim">
-                        <div class="panel-img"><img src="img/04.jpg" alt="Marsha bergaun kuning di dekat jendela"></div>
-                        <figcaption><span>No. 04</span><span>Golden Hour</span></figcaption>
-                    </figure>
-                    <figure class="panel p-tall">
-                        <div class="panel-img"><img src="img/02.jpg" alt="Marsha berambut merah di studio"></div>
-                        <figcaption><span>No. 05</span><span>Studio</span></figcaption>
-                    </figure>
-                    <figure class="panel p-slim">
-                        <div class="panel-img"><img src="img/07.jpg" alt="Marsha duduk di panggung teater"></div>
-                        <figcaption><span>No. 06</span><span>Teater</span></figcaption>
-                    </figure>
-                    <figure class="panel p-tall">
-                        <div class="panel-img"><img src="img/09.jpg" alt="Marsha dengan rambut dicepol"></div>
-                        <figcaption><span>No. 07</span><span>Soft</span></figcaption>
-                    </figure>
-                    <figure class="panel p-slim">
-                        <div class="panel-img"><img src="img/06.jpg" alt="Marsha dengan kostum panggung merah"></div>
-                        <figcaption><span>No. 08</span><span>Kostum</span></figcaption>
-                    </figure>
-                    <figure class="panel p-tall">
-                        <div class="panel-img"><img src="img/01.jpg" alt="Marsha bergaun cokelat"></div>
-                        <figcaption><span>No. 09</span><span>Portrait</span></figcaption>
-                    </figure>
-                    <div class="panel p-end">
-                        <p>Selalu nantikan aku ya!</p>
-                        <a href="#kontak" class="btn">Kontak <span>→</span></a>
+
+                    <ol class="timeline-list">
+                        <li class="timeline-item">
+                            <h4 class="h4 timeline-item-title">Bachelor of Computer Science, University of Indonesia</h4>
+                            <span>2019 - 2023</span>
+                            <p class="timeline-text">I studied computer science fundamentals including programming, data structures, algorithms, and software development. I gained hands-on experience in web development and participated in various projects to build my skills.</p>
+                        </li>
+
+                        <li class="timeline-item">
+                            <h4 class="h4 timeline-item-title">Master of Information Technology, Bandung Institute of Technology</h4>
+                            <span>2023 - 2024</span>
+                            <p class="timeline-text">I pursued advanced studies in information technology, focusing on software engineering, database management, and emerging technologies. This program enhanced my technical skills and prepared me for senior roles in web development.</p>
+                        </li>
+
+                        <li class="timeline-item">
+                            <h4 class="h4 timeline-item-title">SMA Negeri 1 Sumedang</h4>
+                            <span>2016 - 2019</span>
+                            <p class="timeline-text">I completed my high school education with a focus on science and mathematics, which laid the foundation for my interest in technology and programming. I participated in various extracurricular activities related to computers.</p>
+                        </li>
+                    </ol>
+                </section>
+
+                <section class="timeline">
+                    <div class="title-wrapper">
+                        <div class="icon-box"><ion-icon name="book-outline"></ion-icon></div>
+
+                        <h3 class="h3">Experience</h3>
                     </div>
-                </div>
-            </div>
-            <div class="gallery-progress"><i></i></div>
-        </section>
+
+                    <ol class="timeline-list">
+                        <li class="timeline-item">
+                            <h4 class="h4 timeline-item-title">Senior Web Developer, Tech Company</h4>
+                            <span>2024 - Present</span>
+                            <p class="timeline-text">I lead a team of developers in building and maintaining web applications. I use modern technologies like React and Node.js to create scalable and efficient solutions for clients.</p>
+                        </li>
+
+                        <li class="timeline-item">
+                            <h4 class="h4 timeline-item-title">Front-end Developer, Digital Agency</h4>
+                            <span>2023 - 2024</span>
+                            <p class="timeline-text">I developed user interfaces for various client projects using HTML, CSS, JavaScript, and frameworks like Bootstrap. I collaborated with designers and back-end developers to deliver high-quality websites.</p>
+                        </li>
+
+                        <li class="timeline-item">
+                            <h4 class="h4 timeline-item-title">Junior Web Developer, Startup</h4>
+                            <span>2022 - 2023</span>
+                            <p class="timeline-text">I started my career as a junior developer, working on small projects and learning from senior colleagues. I contributed to the development of internal tools and client websites using basic web technologies.</p>
+                        </li>
+                    </ol>
+                </section>
+
+                <section class="skill">
+                    <h3 class="h3 skills-title">My Skills</h3>
+
+                    <ul class="skills-list content-card">
+                        <li class="skills-item">
+                            <div class="title-wrapper">
+                                <h5 class="h5">Web Design</h5>
+                                <data value="80">80%</data>
+                            </div>
+
+                            <div class="skills-progress-bg">
+                                <div class="skills-progress-fill" style="width: 80%;"></div>
+                            </div>
+                        </li>
+
+                        <li class="skills-item">
+                            <div class="title-wrapper">
+                                <h5 class="h5">Graphic Design</h5>
+                                <data value="70">70%</data>
+                            </div>
+
+                            <div class="skills-progress-bg">
+                                <div class="skills-progress-fill" style="width: 70%;"></div>
+                            </div>
+                        </li>
+
+                        <li class="skills-item">
+                            <div class="title-wrapper">
+                                <h5 class="h5">Branding</h5>
+                                <data value="90">90%</data>
+                            </div>
+
+                            <div class="skills-progress-bg">
+                                <div class="skills-progress-fill" style="width: 90%;"></div>
+                            </div>
+                        </li>
+
+                        <li class="skills-item">
+                            <div class="title-wrapper">
+                                <h5 class="h5">WordPress</h5>
+                                <data value="50">50%</data>
+                            </div>
+
+                            <div class="skills-progress-bg">
+                                <div class="skills-progress-fill" style="width: 50%;"></div>
+                            </div>
+                        </li>
+                    </ul>
+                </section>
+            </article>
+
+            <article class="portfolio " data-page="portfolio">
+                <header>
+                    <h2 class="h2 article-title">Portfolio</h2>
+                </header>
+
+                <section class="projects">
+                    <ul class="filter-list">
+                        <li class="filter-item"><button class="active" data-filter-btn>All</button></li>
+                        <li class="filter-item"><button data-filter-btn>Web Design</button></li>
+                        <li class="filter-item"><button data-filter-btn>Applications</button></li>
+                        <li class="filter-item"><button data-filter-btn>Web Development</button></li>
+                    </ul>
+
+                    <div class="filter-select-box">
+                        <button class="filter-select " data-select>
+                            <div class="select-value" data-select-value>Select Category</div>
+
+                            <div class="select-icon">
+                                <ion-icon name="chevron-down"></ion-icon>
+                            </div>
+                        </button>
+
+                        <ul class="select-list">
+                            <li class="select-item"><button data-select-item>All</button></li>
+                            <li class="select-item"><button data-select-item>Web Design</button></li>
+                            <li class="select-item"><button data-select-item>Applications</button></li>
+                            <li class="select-item"><button data-select-item>Web Development</button></li>
+                        </ul>
+                    </div>
+
+                    <ul class="project-list">
+                        <li class="project-item active" data-filter-item data-category="web development">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="finance" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Finance</h3>
+                                <p class="project-category">Web Development</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="web development">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="orizon" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Orizon</h3>
+                                <p class="project-category">Web Development</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="web design">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="fundo" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Fundo</h3>
+                                <p class="project-category">Web Design</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="applications">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="brawlhalla" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Brawlhalla</h3>
+                                <p class="project-category">Applications</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="web design">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="dsm." loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">DSM.</h3>
+                                <p class="project-category">Web Design</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="web design">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="metaspark" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Metaspark</h3>
+                                <p class="project-category">Web Design</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="web development">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="summary" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Summary</h3>
+                                <p class="project-category">Web Development</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="applications">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="task manager" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Task Manager</h3>
+                                <p class="project-category">Applications</p>
+                            </a>
+                        </li>
+
+                        <li class="project-item active" data-filter-item data-category="web development">
+                            <a href="#">
+                                <figure class="project-img">
+                                    <div class="project-item-icon-box">
+                                        <ion-icon name="eye-outline"></ion-icon>
+                                    </div>
+
+                                    <img src="waguri.webp" alt="arrival" loading="lazy">
+                                </figure>
+
+                                <h3 class="project-title">Arrival</h3>
+                                <p class="project-category">Web Development</p>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </article>
+
+            <article class="blog " data-page="blog">
+                <header>
+                    <h2 class="h2 article-title">Blog</h2>
+                </header>
+
+                <section class="blog-posts">
+                    <ul class="blog-posts-list">
+                        <li class="blog-post-item">
+                            <a href="#">
+                                    <figure class="blog-banner-box">
+                                        <img src="waguri.webp" alt="Design conferences in 2024" loading="lazy">
+                                    </figure>
+
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <p class="blog-category">Design</p>
+                                        <span class="dot"></span>
+                                        <time datetime="2024-02-23">Feb 23, 2024</time>
+                                    </div>
+
+                                    <h3 class="h3 blog-item-title">How to Build a Responsive Website in 2024</h3>
+                                    <p class="blog-text">In this post, I'll guide you through the steps to create a responsive website using modern CSS techniques like Flexbox and Grid. We'll cover best practices for mobile-first design and testing across devices.</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="blog-post-item">
+                            <a href="#">
+                                <figure class="blog-banner-box">
+                                    <img src="waguri.webp" alt="Best fonts every designer" loading="lazy">
+                                </figure>
+
+
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <p class="blog-category">Design</p>
+                                        <span class="dot"></span>
+                                        <time datetime="2024-01-29">Jan 29, 2024</time>
+                                    </div>
+
+                                    <h3 class="h3 blog-item-title">Top 10 Web Development Tools in 2024</h3>
+                                    <p class="blog-text">Discover the best tools for web development this year, including code editors, frameworks, and utilities that can boost your productivity. From VS Code to React, here's what you need to know.</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="blog-post-item">
+                            <a href="#">
+                                <figure class="blog-banner-box">
+                                    <img src="waguri.webp" alt="Design digest #80" loading="lazy">
+                                </figure>
+
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <p class="blog-category">Design</p>
+                                        <span class="dot"></span>
+                                        <time datetime="2023-12-20">Dec 20, 2023</time>
+                                    </div>
+
+                                    <h3 class="h3 blog-item-title">Best Practices for SEO in 2024</h3>
+                                    <p class="blog-text">Learn the latest SEO strategies to improve your website's visibility on search engines. We'll discuss keyword research, on-page optimization, and technical SEO tips for better rankings.</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="blog-post-item">
+                            <a href="#">
+                                <figure class="blog-banner-box">
+                                    <img src="waguri.webp" alt="2023 UI interactions" loading="lazy">
+                                </figure>
+
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <p class="blog-category">Design</p>
+                                        <span class="dot"></span>
+                                        <time datetime="2023-11-29">Nov 29, 2023</time>
+                                    </div>
+
+                                    <h3 class="h3 blog-item-title">JavaScript Frameworks to Learn in 2024</h3>
+                                    <p class="blog-text">Explore the most popular JavaScript frameworks for building dynamic web applications. From React to Vue.js, I'll explain the pros and cons of each and help you choose the right one for your project.</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="blog-post-item">
+                            <a href="#">
+                                <figure class="blog-banner-box">
+                                    <img src="waguri.webp" alt="The forgotten art of spacing" loading="lazy">
+                                </figure>
+
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <p class="blog-category">Design</p>
+                                        <span class="dot"></span>
+                                        <time datetime="2023-11-12">Nov 12, 2023</time>
+                                    </div>
+
+                                    <h3 class="h3 blog-item-title">CSS Grid vs Flexbox: Which to Use?</h3>
+                                    <p class="blog-text">Understand the differences between CSS Grid and Flexbox for layout design. I'll provide examples and scenarios where each is most effective, helping you make informed decisions in your projects.</p>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li class="blog-post-item">
+                            <a href="#">
+                                <figure class="blog-banner-box">
+                                    <img src="waguri.webp" alt="Design digest #79" loading="lazy">
+                                </figure>
+
+                                <div class="blog-content">
+                                    <div class="blog-meta">
+                                        <p class="blog-category">Design</p>
+                                        <span class="dot"></span>
+                                        <time datetime="2023-10-20">Oct 20, 2023</time>
+                                    </div>
+
+                                    <h3 class="h3 blog-item-title">Building Mobile-First Websites</h3>
+                                    <p class="blog-text">Adopt a mobile-first approach to web design for better performance and user experience. I'll share tips on designing for small screens first and then scaling up to larger devices.</p>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </article>
+
+            <article class="contact " data-page="contact">
+                <header>
+                    <h2 class="h2 article-title">Contact</h2>
+                </header>
+
+                <section class="mapbox" data-mapbox>
+                    <figure>
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63370.76469320686!2d107.88816178640722!3d-6.838323512345067!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68ba511fc1e4f1%3A0x401e8f1fc28d630!2sSumedang%2C%20West%20Java%2C%20Indonesia!5e0!3m2!1sen!2sus!4v1727001234567!5m2!1sen!2sus"
+                         width="400" height="300" loading="lazy"></iframe>
+                    </figure>
+                </section>
+
+                <section class="contact-form">
+                    <h3 class="h3 form-title">Contact Form</h3>
+
+                    <form action="#" class="form" data-form>
+                        <div class="input-wrapper">
+                            <input type="text" name="fullname" class="form-input" placeholder="Full name" required data-form-input>
+                            <input type="email" name="email" class="form-input" placeholder="Email Address" required data-form-input>
+                        </div>
+
+                        <textarea name="message" class="form-input" placeholder="Your Message" required data-form-input=""></textarea>
+
+                        <button class="form-btn" type="submit" disabled data-form-btn>
+                            <ion-icon name="paper-plane"></ion-icon>
+                            <span>Send Message</span>
+                        </button>
+                    </form>
+                </section>
+            </article>
+        </div>
     </main>
 
-    <!-- ================= 05 KONTAK / FOOTER ================= -->
-    <footer class="footer" id="kontak">
-        <span class="eyebrow" data-reveal><b>05</b> Kontak</span>
-        <h2 class="display" data-split>Terima kasih sudah <em>mampir!</em></h2>
+    <script src="script.js"></script>
 
-        <!-- Ganti href "#" dengan tautan akun yang sebenarnya -->
-        <ul class="socials">
-            <li><a class="social" href="#" target="_blank" rel="noopener">Instagram <span>↗</span></a></li>
-            <li><a class="social" href="#" target="_blank" rel="noopener">X / Twitter <span>↗</span></a></li>
-            <li><a class="social" href="#" target="_blank" rel="noopener">TikTok <span>↗</span></a></li>
-            <li><a class="social" href="https://jkt48.com" target="_blank" rel="noopener">JKT48 <span>↗</span></a></li>
-        </ul>
-
-        <div class="footer-meta">
-            <span>Project By Priadiprakasa</span>
-            <span class="date">Jakarta, 09-01-2006</span>
-            <a href="#home" class="to-top">Kembali ke atas <i>↑</i></a>
-        </div>
-
-        <div class="footer-giant" aria-hidden="true">
-            <span class="ch"><span class="ci">M</span></span><span class="ch"><span class="ci">A</span></span><span class="ch"><span class="ci">R</span></span><span class="ch"><span class="ci">S</span></span><span class="ch"><span class="ci">H</span></span><span class="ch"><span class="ci">A</span></span>
-        </div>
-        <p class="footer-copy">© 2026 Priadiprakasa — Marsha Lenathea Portfolio</p>
-    </footer>
-
-    <script>
-    (() => {
-        const html = document.documentElement;
-        const body = document.body;
-        const anim = html.classList.contains('anim');
-        const finePointer = matchMedia('(pointer: fine)').matches;
-
-        /* ---------- Nav: muncul setelah hero lewat ---------- */
-        const nav = document.getElementById('nav');
-        new IntersectionObserver(([e]) => nav.classList.toggle('is-visible', !e.isIntersecting), { threshold: 0.12 })
-            .observe(document.querySelector('.stage'));
-
-        const navLinks = [...document.querySelectorAll('.nav-links a')];
-        const activeObs = new IntersectionObserver(entries => {
-            entries.forEach(e => {
-                if (!e.isIntersecting) return;
-                navLinks.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#' + e.target.id));
-            });
-        }, { rootMargin: '-45% 0px -50% 0px' });
-        navLinks.forEach(a => activeObs.observe(document.querySelector(a.getAttribute('href'))));
-
-        /* ---------- Menu HP ---------- */
-        const toggle = document.querySelector('.nav-toggle');
-        const setMenu = open => {
-            body.classList.toggle('menu-open', open);
-            body.classList.toggle('is-locked', open);
-            toggle.setAttribute('aria-expanded', open);
-            toggle.textContent = open ? 'Tutup' : 'Menu';
-        };
-        toggle.addEventListener('click', () => setMenu(!body.classList.contains('menu-open')));
-        document.querySelectorAll('.menu a').forEach(a => a.addEventListener('click', () => setMenu(false)));
-
-        /* ---------- Kursor ---------- */
-        if (finePointer) {
-            html.classList.add('has-cursor');
-            const cursor = document.querySelector('.cursor');
-            let mx = -100, my = -100, cx = mx, cy = my;
-            addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-            (function loop() {
-                cx += (mx - cx) * 0.22; cy += (my - cy) * 0.22;
-                cursor.style.transform = `translate(${cx}px, ${cy}px)`;
-                requestAnimationFrame(loop);
-            })();
-            document.querySelectorAll('a, button, .act, .panel').forEach(el => {
-                el.addEventListener('mouseenter', () => cursor.classList.add('is-hover'));
-                el.addEventListener('mouseleave', () => cursor.classList.remove('is-hover'));
-            });
-        }
-
-        if (!anim) return;
-
-        /* ================= ANIMASI GSAP ================= */
-        gsap.registerPlugin(ScrollTrigger);
-        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-        scrollTo(0, 0);
-        body.classList.add('is-locked');
-
-        // Pecah teks menjadi kata supaya bisa muncul satu per satu
-        function splitWords(el) {
-            const out = [];
-            const frag = document.createDocumentFragment();
-            const wrap = content => {
-                const w = document.createElement('span'); w.className = 'w';
-                const i = document.createElement('span'); i.className = 'wi';
-                i.append(content); w.append(i); frag.append(w); out.push(i);
-            };
-            [...el.childNodes].forEach(n => {
-                if (n.nodeType === 3) {
-                    n.textContent.split(/(\s+)/).forEach(part => {
-                        if (!part) return;
-                        if (/^\s+$/.test(part)) frag.append(' ');
-                        else wrap(part);
-                    });
-                } else if (n.nodeName === 'BR') frag.append(n);
-                else wrap(n);
-            });
-            el.replaceChildren(frag);
-            return out;
-        }
-
-        /* ---------- Loader → intro hero ---------- */
-        const loader = document.querySelector('.loader');
-        const count = loader.querySelector('.loader-count');
-        const counter = { v: 0 };
-
-        gsap.set('.subject', { xPercent: -50, x: 0 });
-
-        const intro = gsap.timeline({ paused: true, defaults: { ease: 'expo.out' } })
-            .from('.frame', { clipPath: 'inset(50% 50% 50% 50%)', duration: 1.6, ease: 'expo.inOut' }, 0)
-            .from('.title .ci', { yPercent: 115, duration: 1.4, stagger: 0.07 }, 0.15)
-            .from('.subject', { y: 160, opacity: 0, duration: 1.8, ease: 'power4.out' }, 0.35)
-            .from('.jp span', { yPercent: 120, opacity: 0, duration: 1, stagger: 0.08 }, 0.6)
-            .from('.drips line', { strokeDashoffset: 1, duration: 1.3, stagger: 0.06, ease: 'power3.inOut' }, 0.5)
-            .fromTo('.lenathea', { clipPath: 'inset(-30% 100% -30% -10%)' }, { clipPath: 'inset(-30% -10% -30% -10%)', duration: 1.8, ease: 'power2.inOut' }, 1.1)
-            .from(['.intro', '.dated', '.news', '.question'], { y: 36, opacity: 0, duration: 1.2, stagger: 0.1 }, 0.9)
-            .from('.scroll-cue', { opacity: 0, y: 20, duration: 1 }, 1.4);
-
-        gsap.timeline()
-            .from('.loader-jp span', { yPercent: 110, duration: 0.8, stagger: 0.08, ease: 'power3.out' }, 0)
-            .to(counter, { v: 100, duration: 1.6, ease: 'power2.inOut', onUpdate: () => count.textContent = String(Math.round(counter.v)).padStart(3, '0') }, 0)
-            .to('.loader-bar i', { scaleX: 1, duration: 1.6, ease: 'power2.inOut' }, 0)
-            .to('.loader-inner', { opacity: 0, y: -24, duration: 0.5, ease: 'power2.in' })
-            .to('.loader-panel', { yPercent: -100, duration: 1, stagger: 0.07, ease: 'expo.inOut' })
-            .add(() => intro.play(), '-=0.75')
-            .add(() => { loader.remove(); body.classList.remove('is-locked'); ScrollTrigger.refresh(); });
-
-        /* ---------- Hero: parallax mengikuti mouse ---------- */
-        if (finePointer) {
-            const bgX = gsap.quickTo('#parallax-bg', 'x', { duration: 1, ease: 'power3' });
-            const bgY = gsap.quickTo('#parallax-bg', 'y', { duration: 1, ease: 'power3' });
-            const sX = gsap.quickTo('#parallax-subject', 'x', { duration: 1.2, ease: 'power3' });
-            const sY = gsap.quickTo('#parallax-subject', 'y', { duration: 1.2, ease: 'power3' });
-            const lX = gsap.quickTo('.lenathea', 'x', { duration: 1.4, ease: 'power3' });
-            addEventListener('mousemove', e => {
-                const x = (innerWidth / 2 - e.clientX) / 60;
-                const y = (innerHeight / 2 - e.clientY) / 60;
-                bgX(x * 0.5); bgY(y * 0.5);
-                sX(-x); sY(-y * 0.3);
-                lX(-x * 1.6);
-            });
-        }
-
-        /* ---------- Hero: efek saat di-scroll keluar ---------- */
-        const heroOut = { trigger: '.stage', start: 'top top', end: 'bottom top', scrub: true };
-        gsap.to('.title .ch', { x: i => (i - 2.5) * innerWidth * 0.05, ease: 'none', scrollTrigger: { ...heroOut, invalidateOnRefresh: true } });
-        gsap.to('.title', { yPercent: 30, ease: 'none', scrollTrigger: heroOut });
-        gsap.to('.subject', { yPercent: 12, scale: 1.04, transformOrigin: '50% 100%', ease: 'none', scrollTrigger: heroOut });
-        gsap.to('.layer-front', { yPercent: -18, opacity: 0, ease: 'none', scrollTrigger: { ...heroOut, end: '70% top' } });
-        gsap.to('.frame', { scale: 0.94, opacity: 0, ease: 'none', scrollTrigger: heroOut });
-
-        /* ---------- Marquee: arah mengikuti arah scroll ---------- */
-        const mTrack = document.querySelector('.marquee-track');
-        ScrollTrigger.create({ onUpdate: self => { mTrack.style.animationDirection = self.direction === 1 ? 'normal' : 'reverse'; } });
-        gsap.fromTo('.marquee', { rotate: -2, scale: 1.06 }, { rotate: 0, scale: 1, ease: 'none', scrollTrigger: { trigger: '.marquee', start: 'top bottom', end: 'bottom top', scrub: true } });
-
-        /* ---------- Reveal umum ---------- */
-        gsap.utils.toArray('[data-reveal]').forEach(el => {
-            gsap.from(el, { y: 40, opacity: 0, duration: 1.3, ease: 'expo.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
-        });
-        gsap.utils.toArray('[data-split]').forEach(el => {
-            gsap.from(splitWords(el), { yPercent: 115, duration: 1.3, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: el, start: 'top 85%' } });
-        });
-
-        /* ---------- Profil ---------- */
-        const media = document.querySelector('.profile-media');
-        gsap.fromTo('.profile-img', { clipPath: 'inset(100% 0 0 0)' }, {
-            clipPath: 'inset(0% 0 0 0)', duration: 1.6, ease: 'expo.inOut',
-            scrollTrigger: { trigger: media, start: 'top 80%', onEnter: () => media.classList.add('in') }
-        });
-        gsap.fromTo('.profile-img img', { yPercent: -12 }, { yPercent: 0, ease: 'none', scrollTrigger: { trigger: media, start: 'top bottom', end: 'bottom top', scrub: true } });
-        gsap.from('.profile-jp', { opacity: 0, y: -40, duration: 1.4, ease: 'expo.out', scrollTrigger: { trigger: media, start: 'top 70%' } });
-        gsap.from('.fact .rule', { scaleX: 0, duration: 1.2, ease: 'expo.inOut', stagger: 0.12, scrollTrigger: { trigger: '.facts', start: 'top 85%' } });
-        gsap.from('.fact dt, .fact dd', { y: 20, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.06, delay: 0.3, scrollTrigger: { trigger: '.facts', start: 'top 85%' } });
-
-        /* ---------- Aktivitas ---------- */
-        gsap.utils.toArray('.act').forEach(row => {
-            gsap.timeline({ scrollTrigger: { trigger: row, start: 'top 88%' } })
-                .from(row.querySelector('.rule'), { scaleX: 0, duration: 1.2, ease: 'expo.inOut' })
-                .from(row.querySelectorAll('.act-num, .act-title, .act-desc, .act-arrow'), { y: 40, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.07 }, 0.25);
-        });
-
-        // Foto kecil yang mengikuti kursor saat hover baris aktivitas
-        if (finePointer) {
-            const preview = document.querySelector('.act-preview');
-            const pImg = preview.querySelector('img');
-            const pX = gsap.quickTo(preview, 'x', { duration: 0.6, ease: 'power3' });
-            const pY = gsap.quickTo(preview, 'y', { duration: 0.6, ease: 'power3' });
-            const pR = gsap.quickTo('.act-preview-inner', 'rotate', { duration: 0.8, ease: 'power3' });
-            let lastX = 0;
-            addEventListener('mousemove', e => {
-                pX(e.clientX); pY(e.clientY);
-                pR(gsap.utils.clamp(-12, 12, (e.clientX - lastX) * 0.6));
-                lastX = e.clientX;
-            });
-            document.querySelectorAll('.act').forEach(row => {
-                row.addEventListener('mouseenter', () => { pImg.src = row.dataset.img; preview.classList.add('is-on'); });
-                row.addEventListener('mouseleave', () => preview.classList.remove('is-on'));
-            });
-        }
-
-        /* ---------- Quote: kata menyala mengikuti scroll ---------- */
-        gsap.fromTo(splitWords(document.querySelector('.quote-text')), { opacity: 0.12, yPercent: 20 }, {
-            opacity: 1, yPercent: 0, stagger: 0.15, ease: 'none',
-            scrollTrigger: { trigger: '.quote-text', start: 'top 80%', end: 'bottom 45%', scrub: true }
-        });
-        gsap.fromTo('.quote-bg', { xPercent: 0 }, { xPercent: -30, ease: 'none', scrollTrigger: { trigger: '.quote-sec', start: 'top bottom', end: 'bottom top', scrub: true } });
-        gsap.fromTo('.quote-sign', { clipPath: 'inset(-30% 100% -30% -10%)' }, {
-            clipPath: 'inset(-30% -10% -30% -10%)', duration: 1.8, ease: 'power2.inOut',
-            scrollTrigger: { trigger: '.quote-sign', start: 'top 90%' }
-        });
-
-        /* ---------- Galeri: scroll horizontal di layar lebar ---------- */
-        const mm = gsap.matchMedia();
-        const gallery = document.querySelector('.gallery');
-        const gTrack = document.querySelector('.track');
-
-        mm.add('(min-width: 900px)', () => {
-            gallery.classList.add('is-pinned');
-            const distance = () => gTrack.scrollWidth - innerWidth;
-            const move = gsap.to(gTrack, {
-                x: () => -distance(), ease: 'none',
-                scrollTrigger: { trigger: gallery, start: 'top top', end: () => '+=' + distance(), pin: true, scrub: 1, invalidateOnRefresh: true }
-            });
-            gsap.to('.gallery-progress i', { scaleX: 1, ease: 'none', scrollTrigger: { trigger: gallery, start: 'top top', end: () => '+=' + distance(), scrub: true } });
-            gsap.utils.toArray('.panel-img img').forEach(img => {
-                gsap.fromTo(img, { xPercent: -6 }, { xPercent: 6, ease: 'none', scrollTrigger: { trigger: img.closest('.panel'), containerAnimation: move, start: 'left right', end: 'right left', scrub: true } });
-            });
-            gsap.utils.toArray('.panel').forEach(p => {
-                gsap.from(p, { yPercent: 8, rotate: 1.5, opacity: 0.3, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: move, start: 'left 105%', end: 'left 60%', scrub: true } });
-            });
-            return () => gallery.classList.remove('is-pinned');
-        });
-        mm.add('(max-width: 899px)', () => {
-            gsap.from('.panel', { y: 60, opacity: 0, duration: 1.2, ease: 'expo.out', stagger: 0.1, scrollTrigger: { trigger: '.track', start: 'top 85%' } });
-        });
-
-        /* ---------- Footer ---------- */
-        gsap.from('.social', { y: 40, opacity: 0, duration: 1.1, ease: 'expo.out', stagger: 0.08, scrollTrigger: { trigger: '.socials', start: 'top 92%' } });
-        gsap.from('.footer-giant .ci', { yPercent: 105, duration: 1.4, ease: 'expo.out', stagger: 0.06, scrollTrigger: { trigger: '.footer-giant', start: 'top 98%' } });
-
-        /* ---------- Efek magnet pada tombol ---------- */
-        if (finePointer) {
-            document.querySelectorAll('.btn, .to-top i, .act-arrow').forEach(el => {
-                const qx = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3' });
-                const qy = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3' });
-                const host = el.closest('a, li') || el;
-                host.addEventListener('mousemove', e => {
-                    const r = el.getBoundingClientRect();
-                    qx((e.clientX - (r.left + r.width / 2)) * 0.3);
-                    qy((e.clientY - (r.top + r.height / 2)) * 0.3);
-                });
-                host.addEventListener('mouseleave', () => { qx(0); qy(0); });
-            });
-        }
-
-        if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
-    })();
-    </script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </body>
 </html>
